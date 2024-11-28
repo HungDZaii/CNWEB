@@ -42,19 +42,43 @@ if (!empty($curr_question)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bài tập trắc nghiệm</title> <!-- Tiêu đề bài tập trắc nghiệm -->
+    <style>
+        /* Căn giữa tiêu đề */
+        h1 {
+            text-align: center;
+        }
+
+        /* Căn giữa toàn bộ form */
+        form {
+            width: 60%; /* Bạn có thể điều chỉnh độ rộng của form */
+            margin: 0 auto; /* Căn giữa form */
+        }
+
+        /* Căn giữa các câu hỏi */
+        fieldset {
+            margin-bottom: 15px;
+        }
+
+        /* In đậm câu hỏi */
+        .question {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <h1>Bài tập trắc nghiệm</h1> <!-- Tiêu đề bài tập trắc nghiệm ở phần thân -->
     <form action="process.php" method="POST">
         <?php
         foreach ($all_question as $index => $question) {
             echo "<fieldset>";
-            echo  $question . "<br>";
+            // Thêm class "question" để in đậm câu hỏi
+            echo "<div class='question'>" . $question . "</div><br>";
 
             $answers = $all_answer[$index];
             foreach ($answers as $key => $answer) {
                 $option = chr(65 + $key);
-                echo "<label><input type='radio' name='answer" . $index+1 . "' value='$option' /> $answer</label><br>";
+                echo "<label><input type='radio' name='answer" . ($index + 1) . "' value='$option' /> $answer</label><br>";
             }
             echo "</fieldset>";
         }
