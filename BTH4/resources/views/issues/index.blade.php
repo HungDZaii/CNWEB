@@ -183,89 +183,80 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="table-responsive">
-            <div class="table-wrapper">
-                <div class="table-title">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <h2>CRUD</h2>
-                        </div>
-                        <div class="col-sm-4">
-                            <a href="{{ route('issue.create') }}"><button type="button" class="btn btn-info add-new">Add New</button></a>
-                        </div>
-                    </div>
-                    @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endif
 
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Danh Sách Vấn Đề</h2>
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        <div class="d-flex justify-content-start my-3">
+            <a href="{{route('issues.create')}}" class="btn btn-primary">Thêm Vấn Đề Mới</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
 
-                </div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>By</th>
-                            <th>Date</th>
-                            <th>Desc</th>
-                            <th>Urgency</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                    <th>Mã Vấn đề</th>
+                    <th>Tên Máy Tính</th>
+                    <th>Người báo cáo</th>
+                    <th>Thời gian báo cáo</th>
+                    <th>Chi tiết báo cáo</th>
+                    <th>Mức độ sự cố</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($issues as $issue)
+                <tr>
+                    <td>{{ $issue->id }}</td>
+                    <td>{{ $issue->computer->computer_name }}</td>
+                    <td>{{ $issue->reported_by }}</td>
+                    <td>{{ $issue->reported_date }}</td>
+                    <td>{{ $issue->description }}</td>
+                    <td>{{ $issue->urgency}}</td>
+                    <td>{{ $issue->status}}</td> <!-- Hiển thị tên thư viện liên kết -->
+                    <td>
+                        <a href="" class="btn btn-info">Xem</a>
+                        <a href="{{route('issues.edit' , $issue->id )}}" class="btn btn-warning">Chỉnh Sửa</a>
 
-                    </thead>
-                    <tbody>
-                        @foreach ($data as $item)
-                        <tr>
-                            <td>{{ $item->computer->computer_name }}</td>
-                            <td>{{ $item->reporter_by }}</td>
-                            <td>{{ date('d/m/Y H:i', strtotime($item->reporter_date)) }}</td> <!-- Ngày bán (định dạng ngày) -->
-                            <td>{{ $item->description }}</td>
-                            <td>{{ $item->urgency }}</td>
-                            <td>{{ $item->status }}</td>
-                            <td>
-                                <a href="{{ route('issue.edit', $item->id) }}" class="edit" title="Edit">
-                                    <button type="button">Edit</button>
-                                </a>
-                                <button class="delete" id="deleteBtn{{ $item->id }}" type="button" data-toggle="modal" data-target="#deleteModal{{ $item->id }}">Delete</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $issue->id }}">
+                            Xóa
+                        </button>
 
-                                <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ $item->id }}" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel{{ $item->id }}">Xác nhận xóa</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Bạn có chắc chắn muốn xóa mục này không?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <form action="{{ route('issue.destroy', $item->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Xác nhận</button>
-                                                </form>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                                            </div>
-                                        </div>
+                        <div class="modal fade" id="deleteModal{{ $issue->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ $issue->id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ $issue->id }}">Xác nhận xóa</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn muốn xóa đồ án này không?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                        <form action="{{ route('issues.destroy', $issue->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Xóa</button>
+                                        </form>
                                     </div>
                                 </div>
-                            </td>
-
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-center">
-                    {{ $data->links('pagination::bootstrap-4') }}
-                </div>
-            </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center">
+            {{ $issues->links('pagination::bootstrap-4') }}
         </div>
+
     </div>
 
 
